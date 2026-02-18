@@ -2,342 +2,519 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ศูนย์รวมแจ้งของหาย-เก็บได้ (Lost & Found)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lost & Found - ศูนย์รวมของหายและเก็บได้</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #FDFBF7;
+            --bg-color: #FFF9F9;
+            --primary: #8ECAE6;
+            --secondary: #219EBC;
+            --text-main: #4A4A4A;
+            --text-light: #888;
+            
+            /* Pastel Theme */
+            --lost-color: #FFB5B5; /* ชมพูพาสเทล */
+            --lost-dark: #FF8E8E;
+            --found-color: #B9E4C9; /* เขียวพาสเทล */
+            --found-dark: #8AC6A3;
             --card-bg: #FFFFFF;
-            --primary-text: #555555;
-            --accent-pink: #FFB7B2;
-            --accent-green: #B5EAD7;
-            --accent-blue: #C7CEEA;
-            --accent-yellow: #FFDAC1;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Kanit', sans-serif;
             background-color: var(--bg-color);
-            color: var(--primary-text);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Header --- */
         header {
-            background-color: var(--accent-blue);
-            padding: 2rem;
+            background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+            padding: 3rem 1rem;
             text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        h1 {
-            margin: 0;
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        /* Form Styling */
-        .post-form {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             margin-bottom: 2rem;
         }
 
-        .form-title {
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #555;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 10px;
+            background: rgba(255,255,255,0.6);
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 600px; /* ลดความกว้างเพื่อให้ดูเหมือนแอปมือถือ */
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem 1.5rem;
+        }
+
+        /* --- Form Section --- */
+        .card-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            margin-bottom: 3rem;
+            border: 4px solid #fff;
+        }
+
+        .form-header {
             text-align: center;
-            color: var(--primary-text);
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-header h2 { font-size: 1.5rem; color: var(--text-main); }
+
+        /* Type Selector (Toggle) */
+        .type-selector {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 5px;
             margin-bottom: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            font-family: 'Kanit', sans-serif;
-            box-sizing: border-box; /* Fix padding issue */
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .radio-option {
+        .type-option {
             flex: 1;
-        }
-
-        .radio-option input {
-            display: none;
-        }
-
-        .radio-option label {
-            display: block;
             text-align: center;
-            padding: 10px;
-            background: #eee;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        /* Logic for highlighting radio buttons */
-        #type-lost:checked + label {
-            background-color: var(--accent-pink);
-            color: white;
-        }
-
-        #type-found:checked + label {
-            background-color: var(--accent-green);
-            color: white;
-        }
-
-        button.submit-btn {
-            width: 100%;
             padding: 12px;
-            background-color: var(--accent-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            border-radius: 15px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        /* Logic for selection styling */
+        input[name="type"] { display: none; }
+        
+        input#type-lost:checked ~ .type-selector label[for="type-lost"] {
+            background: var(--lost-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 181, 181, 0.4);
+        }
+
+        input#type-found:checked ~ .type-selector label[for="type-found"] {
+            background: var(--found-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(185, 228, 201, 0.4);
+        }
+
+        /* Inputs */
+        .input-group { margin-bottom: 1.2rem; }
+        
+        label.input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #EEE;
+            border-radius: 15px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
             transition: 0.3s;
+            background: #FAFAFA;
         }
 
-        button.submit-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            background: #FFF;
+            outline: none;
         }
 
-        /* List Styling */
+        /* Image Upload Styling */
+        .image-upload-box {
+            border: 2px dashed #DDD;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #FAFAFA;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload-box:hover { border-color: var(--primary); background: #F0F8FF; }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            display: none;
+            margin-top: 10px;
+            object-fit: cover;
+        }
+        
+        .upload-icon { font-size: 2rem; color: #BBB; display: block; margin-bottom: 5px; }
+
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(90deg, #8ECAE6, #219EBC);
+            box-shadow: 0 5px 15px rgba(33, 158, 188, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-submit:active { transform: scale(0.98); }
+
+        /* --- List Section --- */
+        .section-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
         .item-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 1.5rem;
         }
 
         .item-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            position: relative;
+            background: white;
+            border-radius: 25px;
             overflow: hidden;
-            border-top: 5px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: fadeIn 0.5s ease;
         }
 
-        .item-card.lost { border-top-color: var(--accent-pink); }
-        .item-card.found { border-top-color: var(--accent-green); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-img { font-size: 3rem; opacity: 0.2; }
+
+        .card-content { padding: 1.5rem; }
 
         .tag {
             position: absolute;
             top: 15px;
-            right: 15px;
-            padding: 5px 10px;
+            left: 15px;
+            padding: 6px 15px;
             border-radius: 20px;
-            font-size: 0.8rem;
             color: white;
-            font-weight: bold;
-        }
-
-        .tag.lost { background-color: var(--accent-pink); }
-        .tag.found { background-color: var(--accent-green); }
-
-        .item-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .item-desc {
-            font-size: 0.95rem;
-            color: #777;
-            margin-bottom: 1rem;
-        }
-
-        .item-contact {
-            background: var(--accent-yellow);
-            padding: 10px;
-            border-radius: 8px;
             font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .tag.lost { background: var(--lost-dark); }
+        .tag.found { background: var(--found-dark); }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .card-info {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .contact-box {
+            background: #FFF8E1;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 15px;
             text-align: center;
-        }
-
-        .date-posted {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-top: 10px;
-            text-align: right;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 0.8rem;
-            cursor: pointer;
-            margin-top: 5px;
-            text-decoration: underline;
+            color: #F9A825;
+            font-weight: 600;
         }
         
-        .delete-btn:hover { color: red; }
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.8);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Lost & Found</h1>
-    <p>ศูนย์รวมแจ้งของหาย และ ส่งคืนของที่เก็บได้</p>
+    <h1>🔎 Lost & Found</h1>
+    <p class="subtitle">พื้นที่กลางสำหรับทุกคน</p>
 </header>
 
 <div class="container">
-    
-    <div class="post-form">
-        <h2 class="form-title">📝 แจ้งข้อมูลใหม่</h2>
-        <form id="lostFoundForm">
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="type-lost" name="type" value="lost" checked>
-                    <label for="type-lost">ของหาย (Lost)</label>
+
+    <div class="card-form">
+        <div class="form-header">
+            <h2>📢 แจ้งข้อมูลใหม่</h2>
+            <p style="color:#aaa; font-size:0.9rem;">กรอกข้อมูลให้ครบถ้วนเพื่อช่วยกันตามหา</p>
+        </div>
+
+        <form id="appForm">
+            <input type="radio" id="type-lost" name="type" value="lost" checked>
+            <input type="radio" id="type-found" name="type" value="found">
+
+            <div class="type-selector">
+                <label for="type-lost" class="type-option">😭 ของหาย (Lost)</label>
+                <label for="type-found" class="type-option">🥰 เก็บได้ (Found)</label>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">📸 รูปภาพสิ่งของ (ถ้ามี)</label>
+                <div class="image-upload-box" onclick="document.getElementById('fileInput').click()">
+                    <span class="upload-icon">☁️</span>
+                    <span id="uploadText">แตะเพื่ออัปโหลดรูปภาพ</span>
+                    <img id="preview" class="image-preview">
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
                 </div>
-                <div class="radio-option">
-                    <input type="radio" id="type-found" name="type" value="found">
-                    <label for="type-found">เก็บได้ (Found)</label>
-                </div>
             </div>
 
-            <div class="form-group">
-                <label>ชื่อสิ่งของ</label>
-                <input type="text" id="itemName" placeholder="เช่น กระเป๋าสตางค์, กุญแจรถ" required>
+            <div class="input-group">
+                <label class="input-label">🏷️ ชื่อสิ่งของ</label>
+                <input type="text" id="itemName" placeholder="เช่น กุญแจรถ, กระเป๋าสตางค์" required>
             </div>
 
-            <div class="form-group">
-                <label>สถานที่ (หาย/เก็บได้)</label>
-                <input type="text" id="location" placeholder="เช่น โรงอาหาร, ห้องสมุด" required>
+            <div class="input-group">
+                <label class="input-label">📍 สถานที่</label>
+                <input type="text" id="location" placeholder="เช่น หน้าตึก 5, โรงอาหาร" required>
             </div>
 
-            <div class="form-group">
-                <label>รายละเอียดเพิ่มเติม</label>
-                <textarea id="description" rows="3" placeholder="สี, ลักษณะเด่น, เวลาที่เกิดเหตุ"></textarea>
+            <div class="input-group">
+                <label class="input-label">📝 รายละเอียดเพิ่มเติม</label>
+                <textarea id="description" rows="2" placeholder="สี, จุดสังเกต, เวลาที่พบ"></textarea>
             </div>
 
-            <div class="form-group">
-                <label>ช่องทางติดต่อกลับ</label>
-                <input type="text" id="contact" placeholder="เช่น เบอร์โทร, Line ID, Facebook" required>
+            <div class="input-group">
+                <label class="input-label">📞 ช่องทางติดต่อ</label>
+                <input type="text" id="contact" placeholder="เบอร์โทร หรือ Line ID" required>
             </div>
 
-            <button type="submit" class="submit-btn">โพสต์ข้อมูล</button>
+            <button type="submit" class="btn-submit">✨ โพสต์ข้อมูล</button>
         </form>
     </div>
 
-    <h2 style="text-align: center; color: var(--primary-text);">รายการล่าสุด</h2>
+    <div class="section-title">รายการล่าสุด</div>
     <div id="itemList" class="item-list">
         </div>
-
 </div>
 
 <script>
-    // ดึงข้อมูลเก่าจาก LocalStorage (ถ้ามี)
-    let items = JSON.parse(localStorage.getItem('lostFoundItems')) || [];
+    // --- Configuration ---
+    const DB_KEY = 'cuteLostFoundDB';
+    let items = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+    let currentImageBase64 = null;
 
-    const form = document.getElementById('lostFoundForm');
+    // --- Elements ---
+    const form = document.getElementById('appForm');
     const itemList = document.getElementById('itemList');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const uploadText = document.getElementById('uploadText');
+    const uploadIcon = document.querySelector('.upload-icon');
 
-    // ฟังก์ชันสำหรับ Render ข้อมูลออกมาเป็น Card
+    // --- Image Handling (Compress & Preview) ---
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                // Create Canvas to resize image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Resize logic (Max width 400px to save storage)
+                const maxWidth = 400;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Compress to JPEG 0.6 quality
+                currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                
+                // Show Preview
+                preview.src = currentImageBase64;
+                preview.style.display = 'block';
+                uploadText.style.display = 'none';
+                uploadIcon.style.display = 'none';
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // --- Main Functions ---
     function renderItems() {
         itemList.innerHTML = '';
-        
-        // เรียงลำดับจากใหม่ไปเก่า
         const sortedItems = items.slice().reverse();
 
-        sortedItems.forEach((item, index) => {
-            const card = document.createElement('div');
-            // ตรวจสอบประเภทเพื่อกำหนด Class สี
-            const typeClass = item.type === 'lost' ? 'lost' : 'found';
-            const typeText = item.type === 'lost' ? 'ตามหา' : 'เก็บได้';
+        if (sortedItems.length === 0) {
+            itemList.innerHTML = `
+                <div style="text-align:center; color:#ccc; padding:2rem;">
+                    <div style="font-size:3rem;">📭</div>
+                    ยังไม่มีรายการแจ้งเข้ามา
+                </div>
+            `;
+            return;
+        }
 
-            card.className = `item-card ${typeClass}`;
+        sortedItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            
+            const isLost = item.type === 'lost';
+            const badgeClass = isLost ? 'lost' : 'found';
+            const badgeText = isLost ? 'ของหาย' : 'เก็บได้';
+            
+            // Image Logic
+            let imageHTML = `<div class="card-img-container"><div class="no-img">📦</div></div>`;
+            if (item.image) {
+                imageHTML = `<div class="card-img-container"><img src="${item.image}" class="card-img" alt="Item Image"></div>`;
+            }
+
             card.innerHTML = `
-                <span class="tag ${typeClass}">${typeText}</span>
-                <div class="item-title">${item.name}</div>
-                <div style="font-size: 0.9rem; margin-bottom: 5px;">📍 ${item.location}</div>
-                <div class="item-desc">${item.description}</div>
-                <div class="item-contact">📞 ${item.contact}</div>
-                <div class="date-posted">เมื่อ: ${item.date}</div>
-                <button class="delete-btn" onclick="deleteItem(${item.id})">ลบโพสต์</button>
+                ${imageHTML}
+                <span class="tag ${badgeClass}">${badgeText}</span>
+                <button class="delete-btn" onclick="deleteItem(${item.id})">×</button>
+                <div class="card-content">
+                    <div class="card-title">${item.name}</div>
+                    <div class="card-info">📍 ${item.location}</div>
+                    <div class="card-info" style="font-size:0.9rem; color:#888;">📝 ${item.description || '-'}</div>
+                    <div class="contact-box">📞 ${item.contact}</div>
+                    <div style="text-align:right; font-size:0.75rem; color:#bbb; margin-top:10px;">
+                        ${item.date}
+                    </div>
+                </div>
             `;
             itemList.appendChild(card);
         });
     }
 
-    // ฟังก์ชันจัดการเมื่อกด Submit
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const type = document.querySelector('input[name="type"]:checked').value;
-        const name = document.getElementById('itemName').value;
-        const location = document.getElementById('location').value;
-        const description = document.getElementById('description').value;
-        const contact = document.getElementById('contact').value;
-        
-        const newItem = {
-            id: Date.now(), // ใช้เวลาปัจจุบันเป็น ID
-            type,
-            name,
-            location,
-            description,
-            contact,
-            date: new Date().toLocaleString('th-TH')
-        };
+        // Check storage limit safety
+        try {
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const newItem = {
+                id: Date.now(),
+                type: type,
+                name: document.getElementById('itemName').value,
+                location: document.getElementById('location').value,
+                description: document.getElementById('description').value,
+                contact: document.getElementById('contact').value,
+                image: currentImageBase64, // Save Base64 string
+                date: new Date().toLocaleDateString('th-TH', { 
+                    year: 'numeric', month: 'short', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit' 
+                })
+            };
 
-        items.push(newItem);
-        localStorage.setItem('lostFoundItems', JSON.stringify(items)); // บันทึกลงเครื่อง
-        
-        form.reset(); // ล้างฟอร์ม
-        renderItems(); // แสดงผลใหม่
-        alert('บันทึกข้อมูลเรียบร้อย!');
+            items.push(newItem);
+            localStorage.setItem(DB_KEY, JSON.stringify(items));
+            
+            // Reset Form
+            form.reset();
+            currentImageBase64 = null;
+            preview.style.display = 'none';
+            uploadText.style.display = 'inline';
+            uploadIcon.style.display = 'block';
+            
+            renderItems();
+            alert('✨ โพสต์ข้อมูลสำเร็จ!');
+
+        } catch (err) {
+            if (err.name === 'QuotaExceededError') {
+                alert('⚠️ พื้นที่จัดเก็บเต็ม! กรุณาลบรายการเก่าออกบ้าง (เนื่องจากระบบนี้ทำงานบนเบราว์เซอร์โดยตรง)');
+            } else {
+                console.error(err);
+            }
+        }
     });
 
-    // ฟังก์ชันลบโพสต์
     window.deleteItem = (id) => {
-        if(confirm('คุณต้องการลบโพสต์นี้ใช่ไหม?')) {
+        if(confirm('ลบรายการนี้ใช่ไหม?')) {
             items = items.filter(item => item.id !== id);
-            localStorage.setItem('lostFoundItems', JSON.stringify(items));
+            localStorage.setItem(DB_KEY, JSON.stringify(items));
             renderItems();
         }
     };
 
-    // เรียกแสดงผลครั้งแรกเมื่อโหลดหน้าเว็บ
+    // Initial Render
     renderItems();
 
 </script>

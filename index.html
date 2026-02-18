@@ -1,1 +1,346 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ศูนย์รวมแจ้งของหาย-เก็บได้ (Lost & Found)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --primary-text: #555555;
+            --accent-pink: #FFB7B2;
+            --accent-green: #B5EAD7;
+            --accent-blue: #C7CEEA;
+            --accent-yellow: #FFDAC1;
+        }
 
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            margin: 0;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Form Styling */
+        .post-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--primary-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: 'Kanit', sans-serif;
+            box-sizing: border-box; /* Fix padding issue */
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .radio-option {
+            flex: 1;
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background: #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Logic for highlighting radio buttons */
+        #type-lost:checked + label {
+            background-color: var(--accent-pink);
+            color: white;
+        }
+
+        #type-found:checked + label {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* List Styling */
+        .item-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid #eee;
+        }
+
+        .item-card.lost { border-top-color: var(--accent-pink); }
+        .item-card.found { border-top-color: var(--accent-green); }
+
+        .tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tag.lost { background-color: var(--accent-pink); }
+        .tag.found { background-color: var(--accent-green); }
+
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-desc {
+            font-size: 0.95rem;
+            color: #777;
+            margin-bottom: 1rem;
+        }
+
+        .item-contact {
+            background: var(--accent-yellow);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .date-posted {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 5px;
+            text-decoration: underline;
+        }
+        
+        .delete-btn:hover { color: red; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Lost & Found</h1>
+    <p>ศูนย์รวมแจ้งของหาย และ ส่งคืนของที่เก็บได้</p>
+</header>
+
+<div class="container">
+    
+    <div class="post-form">
+        <h2 class="form-title">📝 แจ้งข้อมูลใหม่</h2>
+        <form id="lostFoundForm">
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="type-lost" name="type" value="lost" checked>
+                    <label for="type-lost">ของหาย (Lost)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="type-found" name="type" value="found">
+                    <label for="type-found">เก็บได้ (Found)</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ชื่อสิ่งของ</label>
+                <input type="text" id="itemName" placeholder="เช่น กระเป๋าสตางค์, กุญแจรถ" required>
+            </div>
+
+            <div class="form-group">
+                <label>สถานที่ (หาย/เก็บได้)</label>
+                <input type="text" id="location" placeholder="เช่น โรงอาหาร, ห้องสมุด" required>
+            </div>
+
+            <div class="form-group">
+                <label>รายละเอียดเพิ่มเติม</label>
+                <textarea id="description" rows="3" placeholder="สี, ลักษณะเด่น, เวลาที่เกิดเหตุ"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>ช่องทางติดต่อกลับ</label>
+                <input type="text" id="contact" placeholder="เช่น เบอร์โทร, Line ID, Facebook" required>
+            </div>
+
+            <button type="submit" class="submit-btn">โพสต์ข้อมูล</button>
+        </form>
+    </div>
+
+    <h2 style="text-align: center; color: var(--primary-text);">รายการล่าสุด</h2>
+    <div id="itemList" class="item-list">
+        </div>
+
+</div>
+
+<script>
+    // ดึงข้อมูลเก่าจาก LocalStorage (ถ้ามี)
+    let items = JSON.parse(localStorage.getItem('lostFoundItems')) || [];
+
+    const form = document.getElementById('lostFoundForm');
+    const itemList = document.getElementById('itemList');
+
+    // ฟังก์ชันสำหรับ Render ข้อมูลออกมาเป็น Card
+    function renderItems() {
+        itemList.innerHTML = '';
+        
+        // เรียงลำดับจากใหม่ไปเก่า
+        const sortedItems = items.slice().reverse();
+
+        sortedItems.forEach((item, index) => {
+            const card = document.createElement('div');
+            // ตรวจสอบประเภทเพื่อกำหนด Class สี
+            const typeClass = item.type === 'lost' ? 'lost' : 'found';
+            const typeText = item.type === 'lost' ? 'ตามหา' : 'เก็บได้';
+
+            card.className = `item-card ${typeClass}`;
+            card.innerHTML = `
+                <span class="tag ${typeClass}">${typeText}</span>
+                <div class="item-title">${item.name}</div>
+                <div style="font-size: 0.9rem; margin-bottom: 5px;">📍 ${item.location}</div>
+                <div class="item-desc">${item.description}</div>
+                <div class="item-contact">📞 ${item.contact}</div>
+                <div class="date-posted">เมื่อ: ${item.date}</div>
+                <button class="delete-btn" onclick="deleteItem(${item.id})">ลบโพสต์</button>
+            `;
+            itemList.appendChild(card);
+        });
+    }
+
+    // ฟังก์ชันจัดการเมื่อกด Submit
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const type = document.querySelector('input[name="type"]:checked').value;
+        const name = document.getElementById('itemName').value;
+        const location = document.getElementById('location').value;
+        const description = document.getElementById('description').value;
+        const contact = document.getElementById('contact').value;
+        
+        const newItem = {
+            id: Date.now(), // ใช้เวลาปัจจุบันเป็น ID
+            type,
+            name,
+            location,
+            description,
+            contact,
+            date: new Date().toLocaleString('th-TH')
+        };
+
+        items.push(newItem);
+        localStorage.setItem('lostFoundItems', JSON.stringify(items)); // บันทึกลงเครื่อง
+        
+        form.reset(); // ล้างฟอร์ม
+        renderItems(); // แสดงผลใหม่
+        alert('บันทึกข้อมูลเรียบร้อย!');
+    });
+
+    // ฟังก์ชันลบโพสต์
+    window.deleteItem = (id) => {
+        if(confirm('คุณต้องการลบโพสต์นี้ใช่ไหม?')) {
+            items = items.filter(item => item.id !== id);
+            localStorage.setItem('lostFoundItems', JSON.stringify(items));
+            renderItems();
+        }
+    };
+
+    // เรียกแสดงผลครั้งแรกเมื่อโหลดหน้าเว็บ
+    renderItems();
+
+</script>
+
+</body>
+</html>
